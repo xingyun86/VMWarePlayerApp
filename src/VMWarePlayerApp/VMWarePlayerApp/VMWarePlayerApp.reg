@@ -1,0 +1,17 @@
+REGEDIT
+; This .REG file may be used by your SETUP program.
+;   If a SETUP program is not available, the entries below will be
+;   registered in your InitInstance automatically with a call to
+;   CWinApp::RegisterShellFileTypes and COleObjectFactory::UpdateRegistryAll.
+
+
+HKEY_CLASSES_ROOT\VMWarePlayerApp.Application = VMWarePlayerApp Application
+
+
+HKEY_CLASSES_ROOT\VMWarePlayerApp.Application\CLSID = {21963cac-29f9-4f6b-b907-11002ba7a2d7}
+
+HKEY_CLASSES_ROOT\CLSID\{21963cac-29f9-4f6b-b907-11002ba7a2d7} = VMWarePlayerApp Application
+HKEY_CLASSES_ROOT\CLSID\{21963cac-29f9-4f6b-b907-11002ba7a2d7}\ProgId = VMWarePlayerApp.Application
+
+
+HKEY_CLASSES_ROOT\CLSID\{21963cac-29f9-4f6b-b907-11002ba7a2d7}\LocalServer32 = VMWarePlayerApp.EXE

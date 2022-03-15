@@ -1,0 +1,29 @@
+// VMWarePlayerApp.idl : type library source for VMWarePlayerApp.exe
+
+// This file will be processed by the MIDL compiler to produce the
+// type library (VMWarePlayerApp.tlb).
+
+[ uuid(16aaec7b-bf3b-40b4-b7c6-56e56ca7393c), version(1.0) ]
+library VMWarePlayerApp
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	//  Primary dispatch interface for CVMWarePlayerAppDoc
+
+	[ uuid(a3cf2a27-f0a2-4b97-b7a1-82c4c3f28aff) ]
+	dispinterface IVMWarePlayerApp
+	{
+		properties:
+
+		methods:
+	};
+
+	//  Class information for CVMWarePlayerAppDoc
+
+	[ uuid(21963cac-29f9-4f6b-b907-11002ba7a2d7) ]
+	coclass VMWarePlayerApp
+	{
+		[default] dispinterface IVMWarePlayerApp;
+	};
+};
