@@ -80,7 +80,7 @@ void CFindWndDlg::OnMouseMove(UINT nFlags, CPoint point)
 			TCHAR tzImagePath[MAX_PATH] = { 0 };
 			::GetWindowText(hWnd, tzLabelName, sizeof(tzLabelName) / sizeof(*tzLabelName));
 			::GetClassName(hWnd, tzClassName, sizeof(tzClassName) / sizeof(*tzClassName));
-			GetWindowProcessImageFilePath(hWnd, tzImagePath, sizeof(tzImagePath) / sizeof(*tzImagePath));
+			GetWindowProcessModuleImageFilePath(hWnd, tzImagePath, sizeof(tzImagePath) / sizeof(*tzImagePath));
 			SetDlgItemText(IDC_EDIT_LABEL, tzLabelName);
 			SetDlgItemText(IDC_EDIT_CLASS, tzClassName);
 			SetDlgItemText(IDC_EDIT_IMAGE, tzImagePath);

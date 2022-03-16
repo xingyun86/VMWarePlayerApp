@@ -66,10 +66,90 @@ void RegisterDropFilesEvent(HWND hWnd)
 		pfnChangeWindowMessageFilter(WM_COPYGLOBALDAYA, MSGFLT_ADD);// 0x0049 == WM_COPYGLOBALDATA
 	}
 }
+//#include <Psapi.h>
+//#pragma comment(lib, "psapi")
 __inline static
 int WINAPI GetWindowProcessImageFilePath(HWND hWnd, LPSTR lpString, int nMaxCount)
 {
-	typedef DWORD(*PFN_GetModuleFileNameExA)(HANDLE hProcess, HMODULE hModule, LPSTR lpFilename, DWORD nSize);
+	typedef DWORD(WINAPI*PFN_GetProcessImageFileNameA)(HANDLE hProcess, LPSTR lpFilename, DWORD nSize);
+	int nLength = (-1);
+	DWORD dwProcessId = 0;
+	HANDLE hProcess = NULL;
+	HMODULE hModulePSAPI = NULL;
+	CHAR szModuleFileName[MAX_PATH] = { 0 };
+	PFN_GetProcessImageFileNameA pfnGetProcessImageFileNameA = NULL;
+	if (::GetWindowThreadProcessId(hWnd, &dwProcessId) > 0 && dwProcessId > 0)
+	{
+		pfnGetProcessImageFileNameA = (PFN_GetProcessImageFileNameA)GetProcAddress(GetModuleHandleA("KERNEL32"), ("GetProcessImageFileNameA"));
+		if (pfnGetProcessImageFileNameA == NULL)
+		{
+			pfnGetProcessImageFileNameA = (PFN_GetProcessImageFileNameA)GetProcAddress(GetModuleHandleA("PSAPI"), ("GetProcessImageFileNameA"));
+			if (pfnGetProcessImageFileNameA == NULL)
+			{
+				pfnGetProcessImageFileNameA = (PFN_GetProcessImageFileNameA)GetProcAddress((hModulePSAPI = LoadLibraryA("PSAPI")), ("GetProcessImageFileNameA"));
+			}
+		}
+		if (pfnGetProcessImageFileNameA != NULL)
+		{
+			hProcess = ::OpenProcess(PROCESS_VM_READ | PROCESS_QUERY_INFORMATION, TRUE, dwProcessId);
+			if (hProcess != NULL)
+			{
+				nLength = pfnGetProcessImageFileNameA(hProcess, lpString, nMaxCount);
+				::CloseHandle(hProcess);
+				hProcess = NULL;
+			}
+		}
+		if (hModulePSAPI != NULL)
+		{
+			::FreeLibrary(hModulePSAPI);
+			hModulePSAPI = NULL;
+		}
+	}
+	return nLength;
+}
+__inline static
+int WINAPI GetWindowProcessImageFilePath(HWND hWnd, LPWSTR lpString, int nMaxCount)
+{
+	typedef DWORD(WINAPI*PFN_GetProcessImageFileNameW)(HANDLE hProcess, LPWSTR lpFilename, DWORD nSize);
+	int nLength = (-1);
+	DWORD dwProcessId = 0;
+	HANDLE hProcess = NULL;
+	HMODULE hModulePSAPI = NULL;
+	WCHAR szModuleFileName[MAX_PATH] = { 0 };
+	PFN_GetProcessImageFileNameW pfnGetProcessImageFileNameW = NULL;
+	if (::GetWindowThreadProcessId(hWnd, &dwProcessId) > 0 && dwProcessId > 0)
+	{
+		pfnGetProcessImageFileNameW = (PFN_GetProcessImageFileNameW)GetProcAddress(GetModuleHandleW(L"KERNEL32"), ("GetProcessImageFileNameW"));
+		if (pfnGetProcessImageFileNameW == NULL)
+		{
+			pfnGetProcessImageFileNameW = (PFN_GetProcessImageFileNameW)GetProcAddress(GetModuleHandleW(L"PSAPI"), ("GetProcessImageFileNameW"));
+			if (pfnGetProcessImageFileNameW == NULL)
+			{
+				pfnGetProcessImageFileNameW = (PFN_GetProcessImageFileNameW)GetProcAddress((hModulePSAPI = LoadLibraryW(L"PSAPI")), ("GetProcessImageFileNameW"));
+			}
+		}
+		if (pfnGetProcessImageFileNameW != NULL)
+		{
+			hProcess = ::OpenProcess(PROCESS_VM_READ | PROCESS_QUERY_INFORMATION, TRUE, dwProcessId);
+			if (hProcess != NULL)
+			{
+				nLength = pfnGetProcessImageFileNameW(hProcess, lpString, nMaxCount);
+				::CloseHandle(hProcess);
+				hProcess = NULL;
+			}
+		}
+		if (hModulePSAPI != NULL)
+		{
+			::FreeLibrary(hModulePSAPI);
+			hModulePSAPI = NULL;
+		}
+	}
+	return nLength;
+}
+__inline static
+int WINAPI GetWindowProcessModuleImageFilePath(HWND hWnd, LPSTR lpString, int nMaxCount)
+{
+	typedef DWORD(WINAPI*PFN_GetModuleFileNameExA)(HANDLE hProcess, HMODULE hModule, LPSTR lpFilename, DWORD nSize);
 	int nLength = (-1);
 	DWORD dwProcessId = 0;
 	HANDLE hProcess = NULL;
@@ -106,9 +186,9 @@ int WINAPI GetWindowProcessImageFilePath(HWND hWnd, LPSTR lpString, int nMaxCoun
 	return nLength;
 }
 __inline static
-int WINAPI GetWindowProcessImageFilePath(HWND hWnd, LPWSTR lpString, int nMaxCount)
+int WINAPI GetWindowProcessModuleImageFilePath(HWND hWnd, LPWSTR lpString, int nMaxCount)
 {
-	typedef DWORD(*PFN_GetModuleFileNameExW)(HANDLE hProcess, HMODULE hModule, LPWSTR lpFilename, DWORD nSize0);
+	typedef DWORD(WINAPI*PFN_GetModuleFileNameExW)(HANDLE hProcess, HMODULE hModule, LPWSTR lpFilename, DWORD nSize0);
 	int nLength = (-1);
 	DWORD dwProcessId = 0;
 	HANDLE hProcess = NULL;
@@ -117,13 +197,13 @@ int WINAPI GetWindowProcessImageFilePath(HWND hWnd, LPWSTR lpString, int nMaxCou
 	PFN_GetModuleFileNameExW pfnGetModuleFileNameExW = NULL;
 	if (::GetWindowThreadProcessId(hWnd, &dwProcessId) > 0 && dwProcessId > 0)
 	{
-		pfnGetModuleFileNameExW = (PFN_GetModuleFileNameExW)GetProcAddress(GetModuleHandleA("KERNEL32"), ("GetModuleFileNameExW"));
+		pfnGetModuleFileNameExW = (PFN_GetModuleFileNameExW)GetProcAddress(GetModuleHandleW(L"KERNEL32"), ("GetModuleFileNameExW"));
 		if (pfnGetModuleFileNameExW == NULL)
 		{
-			pfnGetModuleFileNameExW = (PFN_GetModuleFileNameExW)GetProcAddress(GetModuleHandleA("PSAPI"), ("GetModuleFileNameExW"));
+			pfnGetModuleFileNameExW = (PFN_GetModuleFileNameExW)GetProcAddress(GetModuleHandleW(L"PSAPI"), ("GetModuleFileNameExW"));
 			if (pfnGetModuleFileNameExW == NULL)
 			{
-				pfnGetModuleFileNameExW = (PFN_GetModuleFileNameExW)GetProcAddress((hModulePSAPI = LoadLibraryA("PSAPI")), ("GetModuleFileNameExW"));
+				pfnGetModuleFileNameExW = (PFN_GetModuleFileNameExW)GetProcAddress((hModulePSAPI = LoadLibraryW(L"PSAPI")), ("GetModuleFileNameExW"));
 			}
 		}
 		if (pfnGetModuleFileNameExW != NULL)
