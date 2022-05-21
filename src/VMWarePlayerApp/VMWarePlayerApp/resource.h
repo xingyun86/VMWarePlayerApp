@@ -20,6 +20,9 @@
 #define IDC_EDIT_CLASS                  1007
 #define IDC_STATIC_IMAGE                1008
 #define IDC_EDIT_IMAGE                  1009
+#define IDC_STATIC_PARAM                1010
+#define IDC_EDIT_IMAGE2                 1011
+#define IDC_EDIT_PARAM                  1011
 
 // Next default values for new objects
 // 

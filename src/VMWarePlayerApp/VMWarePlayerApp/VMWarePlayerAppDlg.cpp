@@ -171,7 +171,7 @@ BOOL CVMWarePlayerAppDlg::OnInitDialog()
 		m_nidNotifyIcon.hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 		m_nidNotifyIcon.hIcon = m_hIcon;
 		m_nidNotifyIcon.hWnd = m_hWnd;
-		lstrcpy(m_nidNotifyIcon.szTip, TEXT("VMWarePlayer"));
+		lstrcpy(m_nidNotifyIcon.szTip, TEXT("软件窗口管理工具"));
 		m_nidNotifyIcon.uCallbackMessage = WM_SYSTEMTRAY;
 		m_nidNotifyIcon.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
 		Shell_NotifyIcon(NIM_ADD, &m_nidNotifyIcon);
@@ -181,6 +181,7 @@ BOOL CVMWarePlayerAppDlg::OnInitDialog()
 		m_myListCtrl.InsertColumn(m_myListCtrl.GetHeaderCtrl()->GetItemCount(), TEXT("窗口标题"), LVCFMT_LEFT, 100);
 		m_myListCtrl.InsertColumn(m_myListCtrl.GetHeaderCtrl()->GetItemCount(), TEXT("窗口类名"), LVCFMT_LEFT, 120);
 		m_myListCtrl.InsertColumn(m_myListCtrl.GetHeaderCtrl()->GetItemCount(), TEXT("镜像路径"), LVCFMT_LEFT, 200);
+		m_myListCtrl.InsertColumn(m_myListCtrl.GetHeaderCtrl()->GetItemCount(), TEXT("执行参数"), LVCFMT_LEFT, 200);
 		theApp.InitConfig(&m_myListCtrl);
 	}
 	{
@@ -463,15 +464,19 @@ void CVMWarePlayerAppDlg::OnRightClickListData(NMHDR* pNMHDR, LRESULT* pResult)
 	if (menu.CreatePopupMenu() == TRUE)
 	{
 		HWND hWndTmp = NULL;
+		CString strLabel = TEXT("");
 		CString strClass = TEXT("");
 		CString strImage = TEXT("");
+		CString strParam = TEXT("");
 		if (pNMItemActivate->iItem != (-1))
 		{
+			strLabel = m_myListCtrl.GetItemText(pNMItemActivate->iItem, 0);
 			strClass = m_myListCtrl.GetItemText(pNMItemActivate->iItem, 1);
 			strImage = m_myListCtrl.GetItemText(pNMItemActivate->iItem, 2);
+			strParam = m_myListCtrl.GetItemText(pNMItemActivate->iItem, 3);
 			if (strClass.IsEmpty() == FALSE)
 			{
-				hWndTmp = ::FindWindowEx(NULL, NULL, strClass, NULL);
+				hWndTmp = ::FindWindowEx(NULL, NULL, strClass, strLabel);
 			}
 			if (strImage.IsEmpty() == FALSE)
 			{
@@ -487,7 +492,7 @@ void CVMWarePlayerAppDlg::OnRightClickListData(NMHDR* pNMHDR, LRESULT* pResult)
 		{
 			if (strImage.IsEmpty() == FALSE)
 			{
-				StartupProgram(strImage);
+				StartupProgram(strImage, (LPTSTR)(LPCTSTR)strParam);
 			}
 		}
 		break;
@@ -510,7 +515,7 @@ void CVMWarePlayerAppDlg::OnRightClickListData(NMHDR* pNMHDR, LRESULT* pResult)
 		break;
 		case METYPE_DELETE:
 		{
-			theApp.DelConfig(pNMItemActivate->iItem, (LPCTSTR)strClass, (LPCTSTR)strImage);
+			theApp.DelConfig(pNMItemActivate->iItem, (LPCTSTR)strLabel, (LPCTSTR)strClass, (LPCTSTR)strImage, (LPCTSTR)strParam);
 		}
 		break;
 		case METYPE_ADDNEW:

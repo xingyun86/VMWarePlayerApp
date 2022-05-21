@@ -34,6 +34,7 @@ protected:
 		SetDlgItemText(IDC_STATIC_LABEL, TEXT("窗口标题"));
 		SetDlgItemText(IDC_STATIC_CLASS, TEXT("窗口类名"));
 		SetDlgItemText(IDC_STATIC_IMAGE, TEXT("镜像路径"));
+		SetDlgItemText(IDC_STATIC_PARAM, TEXT("执行参数"));
 		SetDlgItemText(IDOK, TEXT("确定"));
 		SetDlgItemText(IDCANCEL, TEXT("关闭"));
 

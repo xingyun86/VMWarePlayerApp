@@ -93,9 +93,11 @@ void CFindWndDlg::OnOK()
 	CString strLabel = TEXT("");
 	CString strClass = TEXT("");
 	CString strImage = TEXT("");
+	CString strParam = TEXT("");
 	GetDlgItemText(IDC_EDIT_LABEL, strLabel);
 	GetDlgItemText(IDC_EDIT_CLASS, strClass);
 	GetDlgItemText(IDC_EDIT_IMAGE, strImage);
-	theApp.AddConfig((LPCTSTR)strLabel, (LPCTSTR)strClass, (LPCTSTR)strImage);
+	GetDlgItemText(IDC_EDIT_PARAM, strParam);
+	theApp.AddConfig((LPCTSTR)strLabel, (LPCTSTR)strClass, (LPCTSTR)strImage, (LPCTSTR)strParam);
 	CDialogEx::OnOK();
 }
